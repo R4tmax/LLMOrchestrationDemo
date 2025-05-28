@@ -1,7 +1,7 @@
-# huggingface_login.py (run once)
-from huggingface_hub import login
-import os
-from dotenv import load_dotenv
+# main.py
+from crew.crew import run_crew
 
-load_dotenv()
-login(os.getenv("HF_TOKEN"))
+if __name__ == "__main__":
+    question = input("What would you like to ask about your notes? ")
+    result = run_crew(question)
+    print("\nFinal Answer:\n", result)
