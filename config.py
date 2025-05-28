@@ -11,7 +11,7 @@ VECTOR_STORE_DOCS_PATH = "docs_store.pkl"
 # Hugging Face Online Inference LLM
 HF_API_TOKEN = "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"
 HF_TOKEN= "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"
-HF_MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3"
+HF_MODEL_ID = "Qwen/Qwen3-235B-A22B"
 #HF_MODEL_ID = "google/flan-t5-large"
 HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2" # Or another model
 
