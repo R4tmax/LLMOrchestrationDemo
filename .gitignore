@@ -3,3 +3,5 @@
 .vsc/*
 
 
+/docs_store.pkl
+/vector_store.faiss
