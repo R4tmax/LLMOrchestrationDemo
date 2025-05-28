@@ -9,10 +9,13 @@ VECTOR_STORE_INDEX_PATH = "vector_store.faiss"
 VECTOR_STORE_DOCS_PATH = "docs_store.pkl"
 
 # Hugging Face Online Inference LLM
-HF_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-# Choose a model available via Inference API, e.g., a Mixtral or Llama model
-HF_MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3" # Example
-HF_INFERENCE_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"
+HF_API_TOKEN = "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"
+HF_TOKEN= "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"
+HF_MODEL_ID = "mistralai/Mistral-7B-Instruct-v0.3"
+#HF_MODEL_ID = "google/flan-t5-large"
+HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2" # Or another model
+
+#HF_INFERENCE_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"
 
 # Embedding model (local)
 EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'

@@ -2,35 +2,26 @@
 from crewai import Crew, Process
 from agents import create_agents
 from tasks import create_tasks
-from config import HF_MODEL_ID, HF_API_TOKEN, OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, \
+from config import HF_TRANSFORMERS_MODEL_ID, HF_API_TOKEN, OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, \
     VECTOR_STORE_DOCS_PATH
 from obsidian_processor import setup_knowledge_base
 from langchain_huggingface import HuggingFaceEndpoint
 import os
-from langchain_community.llms import HuggingFacePipeline
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
-import torch # If using transformers
-from crewai import LLM
-
+from huggingface_hub import InferenceClient
 
 def run_demo():
     # --- LLM Initialization ---
-    # Ensure HF_API_TOKEN is in environment if HuggingFaceEndpoint relies on it by default
-    # Or pass it directly if the class supports it (check Langchain docs for HuggingFaceEndpoint)
-    os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_API_TOKEN  # HuggingFaceEndpoint often picks this up
-    os.environ["HF_TOKEN"] = HF_API_TOKEN
-    #print(HF_API_TOKEN)
-    #print(HF_MODEL_ID)
+    os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_API_TOKEN
 
-    llm = LLM(
-        model=f"huggingface/{HF_MODEL_ID}"
+    client = InferenceClient(
+        provider="hf-inference",
+        api_key=HF_API_TOKEN,
     )
-    print("Local Transformers LLM Initialized.")
 
     # main.py
 
     # --- Agent and Task Initialization ---
-    query_analyst, retrieval_specialist, notes_synthesizer = create_agents(llm)
+    query_analyst, retrieval_specialist, notes_synthesizer = create_agents(local_llm)
     print("Agents Created.")
 
     analyse_query_task, retrieve_info_task, synthesize_answer_task = create_tasks(
