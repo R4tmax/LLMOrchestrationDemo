@@ -25,7 +25,7 @@ def run_demo():
     llm = LLM(
         model=f"huggingface/{HF_MODEL_ID}"
     )
-    print("Local Transformers LLM Initialized.")
+    print("LLM Initialized.")
 
     # main.py
 
