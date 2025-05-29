@@ -9,11 +9,12 @@ VECTOR_STORE_INDEX_PATH = "vector_store.faiss"
 VECTOR_STORE_DOCS_PATH = "docs_store.pkl"
 
 # Hugging Face Online Inference LLM
-HF_API_TOKEN = "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"
-HF_TOKEN= "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"
-HF_MODEL_ID = "Qwen/Qwen3-235B-A22B"
+#HF_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+#HF_TOKEN= os.getenv("HF-TOKEN")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+#HF_MODEL_ID = "Qwen/Qwen3-235B-A22B"
 #HF_MODEL_ID = "google/flan-t5-large"
-HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2" # Or another model
+#HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2" # Or another model
 
 #HF_INFERENCE_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"
 
