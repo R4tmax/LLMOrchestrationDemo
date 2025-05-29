@@ -11,21 +11,12 @@ from crewai import LLM
 
 def run_demo():
     # --- LLM Initialization ---
-    # Ensure HF_API_TOKEN is in environment if HuggingFaceEndpoint relies on it by default
-    # Or pass it directly if the class supports it (check Langchain docs for HuggingFaceEndpoint)
-    #os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_API_TOKEN  # HuggingFaceEndpoint often picks this up
-    #os.environ["HF_TOKEN"] = HF_API_TOKEN
     os.environ["GEMINI-API-KEY"] = GEMINI_API_KEY
-
-    #print(HF_API_TOKEN)
-    #print(HF_MODEL_ID)
 
     llm = LLM(
         model=f"gemini/gemini-2.0-flash"
     )
     print("LLM Initialized.")
-
-    # main.py
 
     # --- Agent and Task Initialization ---
     query_analyst, retrieval_specialist, notes_synthesizer = create_agents(llm)
