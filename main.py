@@ -1,4 +1,3 @@
-# app.py (previously main.py)
 import streamlit as st
 from crewai import Crew, Process, LLM
 from agents import create_agents  # Assuming these are in agents.py
