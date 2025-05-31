@@ -29,6 +29,8 @@ def initialize_llm():
 
 llm = initialize_llm()
 
+#https://deeplearning.vse.cz:80
+#ollama/gemma3:4b-it-qat
 
 # --- Agent Initialization (Cached) ---
 @st.cache_resource  # Agents can also be cached as they depend on the LLM

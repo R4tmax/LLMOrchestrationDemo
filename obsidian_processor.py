@@ -1,4 +1,3 @@
-# For loading (conceptual - adapt with actual library)
 from llama_index.readers.obsidian import ObsidianReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
