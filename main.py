@@ -18,10 +18,8 @@ def initialize_llm():
     # Setting it globally here for LiteLLM to pick up if crewai.LLM doesn't pass it directly.
     os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 
-    # Verify the correct model string for Gemini Flash via LiteLLM.
-    # Common options: "gemini/gemini-1.5-flash-latest" or just "gemini-1.5-flash-latest"
-    # "gemini/gemini-2.0-flash" might not be a recognized LiteLLM string.
-    # Let's use a known valid one:
+    # take note that the system is not conforming to User/Agent flow (User-agent-agent-agent-user)
+    # Certain models might struggle with activating and using the flow here
     llm_instance = LLM(model=f"gemini/gemini-2.0-flash")  # Using crewai.LLM which uses LiteLLM
     print("LLM Initialized for Streamlit app.")
     return llm_instance
@@ -88,6 +86,7 @@ if user_prompt := st.chat_input("Ask a question about your notes..."):
         # Dynamically create tasks with the current context.
         # Your tasks.py's create_tasks function should define tasks whose descriptions
         # can accept {query} and {chat_history} from the inputs dict.
+        # Take note that in current setup the tool usage is defined at the agent level
         current_tasks = create_tasks(query_analyst, retrieval_specialist, notes_synthesizer)
 
         inputs_for_crew = {
