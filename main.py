@@ -1,26 +1,23 @@
 import streamlit as st
 from crewai import Crew, Process, LLM
-from agents import create_agents  # Assuming these are in agents.py
-from tasks import create_tasks  # Assuming these are in tasks.py
+from agents import create_agents
+from tasks import create_tasks
 from config import GEMINI_API_KEY, OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH
 from obsidian_processor import setup_knowledge_base
 import os
 
-# --- Page Configuration (Good practice for Streamlit apps) ---
+# --- Page Configuration ---
 st.set_page_config(page_title="Obsidian RAG Chat", layout="wide")
 
 
-# --- LLM Initialization (Cached to run once) ---
+# --- LLM Initialization  ---
 @st.cache_resource  # Cache the LLM resource to avoid re-initializing on every interaction
 def initialize_llm():
-    # Ensure GEMINI_API_KEY is correctly picked up by LiteLLM.
-    # LiteLLM typically expects os.environ["GEMINI_API_KEY"] or passes it in llm_params.
-    # Setting it globally here for LiteLLM to pick up if crewai.LLM doesn't pass it directly.
     os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 
     # take note that the system is not conforming to User/Agent flow (User-agent-agent-agent-user)
-    # Certain models might struggle with activating and using the flow here
-    llm_instance = LLM(model=f"gemini/gemini-2.0-flash")  # Using crewai.LLM which uses LiteLLM
+    # Certain models might struggle with activating and using the flow
+    llm_instance = LLM(model=f"gemini/gemini-2.5-pro")
     print("LLM Initialized for Streamlit app.")
     return llm_instance
 
@@ -30,8 +27,8 @@ llm = initialize_llm()
 #https://deeplearning.vse.cz:80
 #ollama/gemma3:4b-it-qat
 
-# --- Agent Initialization (Cached) ---
-@st.cache_resource  # Agents can also be cached as they depend on the LLM
+# --- Agent Initialization  ---
+@st.cache_resource
 def get_agents(_llm):
     query_analyst, retrieval_specialist, notes_synthesizer = create_agents(_llm)
     print("Agents Created for Streamlit app.")
@@ -40,7 +37,7 @@ def get_agents(_llm):
 
 query_analyst, retrieval_specialist, notes_synthesizer = get_agents(llm)
 
-# --- Knowledge Base Setup (Run once per app session) ---
+# --- Knowledge Base Setup ---
 if 'kb_setup_done' not in st.session_state:
     if not (os.path.exists(VECTOR_STORE_INDEX_PATH) and os.path.exists(VECTOR_STORE_DOCS_PATH)):
         with st.spinner("Setting up Obsidian knowledge base... This may take a moment."):
@@ -51,8 +48,8 @@ if 'kb_setup_done' not in st.session_state:
     st.session_state.kb_setup_done = True
 
 # --- Streamlit UI ---
-st.title(" 🗣️ Chat with your Obsidian Notes")
-st.caption("Powered by CrewAI & Gemini")
+st.title(" Obsidian Vault Assistant")
+
 
 # Initialize chat history in session state
 if "messages" not in st.session_state:
