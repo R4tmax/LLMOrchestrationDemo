@@ -1,25 +1,25 @@
+"""
+agents script is responsible for preparing the objects for CrewAI agents.
+See https://docs.crewai.com/en/concepts/agents for conceptual definition in framework.
+
+For all practical intents and purposes, agent is the top level archetype of the agentic system.
+It is the agent - in our case powered by the LLM, but in theory it can be any piece of software based logic capable of
+performing conditional logic - who is responsible for receiving input, process it, make a decision and provide output.
+
+Tool is an action outside the capability of the agent, It can be thought of both as an auxiliary or primary method of the agentic action.
+Since we typically think about agentic systems as LLMs based decision frameworks, and as such in theory you can have a system completely void of tools.
+Inversely you could have a system, which basically only chains tools.
+Degree of freedom of thought in the agentic system is largely dependent on the prompt engineering/finetuning done by you as the developer
+at the orchestration level.
+"""
+
 from crewai import Agent
 from tools.obsidian_retriever_tool import ObsidianSearchTool
-from langchain_community.tools import DuckDuckGoSearchRun
-from crewai.tools import BaseTool
+from tools.duckDuckGo_tool import MyCustomDuckDuckGoTool
 
-class MyCustomDuckDuckGoTool(BaseTool):
-    name: str = "DuckDuckGo Search Tool"
-    description: str = "Search the web for a given query."
-
-    def _run(self, query: str) -> str:
-        # Ensure the DuckDuckGoSearchRun is invoked properly.
-        duckduckgo_tool = DuckDuckGoSearchRun()
-        response = duckduckgo_tool.invoke(query)
-        return response
-
-    def _get_tool(self):
-        # Create an instance of the tool when needed
-        return MyCustomDuckDuckGoTool()
-
-
+# Called from main to prepare the "crew"
 def create_agents(llm_instance):
-    # Initialize the tools
+    # Instantiate the tool objects
     obsidian_tool = ObsidianSearchTool()
     web_search_tool = MyCustomDuckDuckGoTool()
 

@@ -1,3 +1,24 @@
+"""
+This script is responsible for vectorizing your Obsidian vault into form processable by RAG system.
+
+If you are completely unfamiliar with text processing techniques, It might be hard to grasp the flow of the code and I would recommend some quick reading first.
+Personally I am big fan of IBM and Google Cloud docs for quick top level grasp, e.g. https://www.ibm.com/think/topics/retrieval-augmented-generation.
+
+Understanding what a "vector" is in this context is a slightly different beast but a good summary can be discerned from Google Docs
+(https://docs.cloud.google.com/vertex-ai/generative-ai/docs/rag-engine/rag-overview), alternatively, my elevator pitch explanation:
+
+Instead of trying to "learn" context of all text inputs, you create an Index (a lookup structure, very similar to how book indexes work in nature),
+which creates a datatype which can be queried for reference, in process of doing so we store which document/file sourced which pieces of text, think of this as citing
+the information.
+
+You then parse all the different documents into smaller subsections -> chunks.
+
+These chunks are then "vectorized" that is, converted to some numerical representation - same way how word2vec works for LLMs - in a
+multidimensional space. Each "chunk" then is as such associated with some direction represented by a matrix, chunks (pieces of text) talking about the same thing
+will be "pointing in similar direction" and similarity between the vectors (e.g. cosine similarity) is used as decision boundary for which chunks should be passed to LLM as context
+to shape its answer.
+"""
+
 from llama_index.readers.obsidian import ObsidianReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer

@@ -1,3 +1,22 @@
+"""
+This is the entrypoint of the whole application.
+
+There are comments throughout to guide you through.
+TLDR. we instantiate a bunch of crewAI objects and structure them in a streamlit UI.
+LLM part of the application is fueled by RPCs to Gemini via GCP Vertex API keys.
+
+If this is your first interaction with LLM orchestration and agentic systems, be sure to work alongside the docs
+(https://docs.crewai.com/en/introduction) to cover your bases.
+Personally, I don't have strong opinions about what library/framework works best. I use crewAI here because
+I have some prior experience with it, and I have the ENV setup on my laptop. In general I would say that
+staying as close to the langGraph ecosystem as you can is the smartest approach (https://docs.langchain.com/),
+its the most used and it is what Dr. Vencovský knows best, and as such can help with.
+
+I you are still struggling with what an LLM is and how it works, I recommend this YT series:
+https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
+If you understand that, you know everything you will ever need to know on the conceptual level.
+"""
+
 import streamlit as st
 from crewai import Crew, Process, LLM
 from agents import create_agents
@@ -17,6 +36,7 @@ def initialize_llm():
 
     # take note that the system is not conforming to User/Agent flow (User-agent-agent-agent-user)
     # Certain models might struggle with activating and using the flow
+    # Inability of model to conform to the flow will be noted by the resulting error
     llm_instance = LLM(model=f"gemini/gemini-2.5-pro")
     print("LLM Initialized for Streamlit app.")
     return llm_instance
@@ -24,6 +44,7 @@ def initialize_llm():
 
 llm = initialize_llm()
 
+# this server runs prepared gemma variant for student use
 #https://deeplearning.vse.cz:80
 #ollama/gemma3:4b-it-qat
 
@@ -69,21 +90,16 @@ if user_prompt := st.chat_input("Ask a question about your notes..."):
 
     # Prepare for AI response
     with st.chat_message("assistant"):
-        message_placeholder = st.empty()  # Used for streaming-like effect if needed, or just to show thinking
+        message_placeholder = st.empty()
         message_placeholder.markdown("Thinking...")
 
-        # Construct chat history string for CrewAI input
-        # We'll pass the last few messages to avoid overly long context for the crew, adjust as needed
-        # For a more robust solution, a proper summarization or selection strategy for history might be needed.
+        # Naive history collection for the chat history
+        # think of this as conversation context
         history_for_crew = []
         for msg in st.session_state.messages[:-1]:  # All messages except the current user_prompt
             history_for_crew.append(f"{msg['role']}: {msg['content']}")
         chat_history_str = "\n---\n".join(history_for_crew)
 
-        # Dynamically create tasks with the current context.
-        # Your tasks.py's create_tasks function should define tasks whose descriptions
-        # can accept {query} and {chat_history} from the inputs dict.
-        # Take note that in current setup the tool usage is defined at the agent level
         current_tasks = create_tasks(query_analyst, retrieval_specialist, notes_synthesizer)
 
         inputs_for_crew = {
@@ -91,13 +107,14 @@ if user_prompt := st.chat_input("Ask a question about your notes..."):
             'chat_history': chat_history_str  # The history leading up to this question
         }
 
-        # Create and run the crew for this turn
+        # Create and run the crew for this turn, flow in this case is sequential for instructive reasons
+        # note that the Crew/Multiagent system behavior does not and it a lot of cases should not be like so.
         obsidian_crew = Crew(
             agents=[query_analyst, retrieval_specialist, notes_synthesizer],
             tasks=current_tasks,
             process=Process.sequential,
-            verbose=True  # Keep False for cleaner Streamlit UI; True for console debugging
-            # memory=True # CrewAI's memory could be an alternative, but explicit history is often clearer for RAG.
+            verbose=True  # I use this to be more instructive, this affects the level of detail in your CLI prints
+            # memory=True  # I handle my own context window
         )
 
         try:

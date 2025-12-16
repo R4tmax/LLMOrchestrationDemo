@@ -1,4 +1,3 @@
-# tools/obsidian_retriever_tool.py
 from crewai.tools import BaseTool
 import faiss
 from sentence_transformers import SentenceTransformer
@@ -7,7 +6,6 @@ import pickle
 from typing import Type, Any
 from pydantic import BaseModel, Field
 
-# Import config variables or pass them during instantiation
 from config import VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH, EMBEDDING_MODEL_NAME
 
 
