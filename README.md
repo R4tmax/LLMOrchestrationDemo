@@ -20,12 +20,20 @@ To launch locally you need
 - LLM model instance, I recommend using API keys for foundational models as HF models have historically been tricky to get to work with CrewAI framework
 - Create .env file as per config.py
 - Local dir with Obsidian Vault (any collection of .md files in theory)
+- You need to be logged into your HuggingFace account via HF-CLI tooling (sentenceTransformer from HF is used to build the vector store)
 
 Launch with 
 ```cmd
  streamlit run main.py
 ```
 from project root, other attempts will cause threading errors.
+In theory all procedures will execute correctly. 
+If you get error relating to store/index creation. 
+Run 
+```cmd
+python obsidian_processor.py 
+```
+from the project root as a standalone script. This will build docs_store.pkl and vector_store.faiss in your local dir for the app to use.
 
 I use Conda on my machine, but for work and non-legacy projects I migrated to **uv**, poetry is also a good option 
 as far as I can tell.

@@ -26,6 +26,9 @@ import faiss
 import numpy as np
 import pickle
 
+from config import OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH
+
+
 def setup_knowledge_base(vault_path, index_path, docs_path):
     # 1. Load Notes
     reader = ObsidianReader(input_dir=vault_path)
@@ -54,3 +57,16 @@ def setup_knowledge_base(vault_path, index_path, docs_path):
     with open(docs_path, 'wb') as f:
         pickle.dump(chunks, f) # Save chunks with metadata corresponding to embeddings
     print(f"Knowledge base setup complete. Index saved to {index_path}, docs to {docs_path}")
+
+
+if __name__ == "__main__":
+    print("Starting Knowledge Base generation...")
+
+    # Run the function
+    try:
+        setup_knowledge_base(OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH)
+        print("SUCCESS: Index and Docs created successfully.")
+    except Exception as e:
+        print(f"FAILED: {e}")
+        import traceback
+        traceback.print_exc()

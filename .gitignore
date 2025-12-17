@@ -5,3 +5,5 @@
 
 /docs_store.pkl.*
 /vector_store.faiss.*
+/docs_store.pkl
+/vector_store.faiss
