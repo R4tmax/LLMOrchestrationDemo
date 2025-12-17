@@ -8,8 +8,14 @@ Code demonstrates usage of CrewAI as LLM orchestration tool for RAG over Obsidia
 
 
 ## Setup 
-See **config.py** and **requirements.txt**, note that reqs were build using pipreqes, I belive that
+See **config.py** and **requirements.txt**, note that reqs were build using pipreqes, I believe that
 crewAI ecosystem has some unfortunate interactions with pip dependencies and as such file is not comprehensive.
+
+I also provided a freeze output, so if you want, you can instead reconstruct my entire env on docker, conda or other
+tooling of choice.
+
+Code is tested on Python 3.10.15 but should be also runnable on most higher version instances. 
+
 To launch locally you need
 - LLM model instance, I recommend using API keys for foundational models as HF models have historically been tricky to get to work with CrewAI framework
 - Create .env file as per config.py
