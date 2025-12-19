@@ -1,6 +1,6 @@
 """
 Task is an action required of the agent.
-Note the oficial documentation https://docs.crewai.com/en/concepts/tasks.
+Note the official documentation https://docs.crewai.com/en/concepts/tasks.
 
 In short, however, task is a template for the model to structure its behavior upon.
 Think of agent definitions as of top level system prompts and of task definitions as personalities/subsetting

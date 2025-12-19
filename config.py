@@ -27,7 +27,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 #HF_MODEL_ID = "Qwen/Qwen3-235B-A22B"
 #HF_MODEL_ID = "google/flan-t5-large"
-#HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2" # Or another model
+#HF_TRANSFORMERS_MODEL_ID = "microsoft/phi-2"
 
 #HF_INFERENCE_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"
 
