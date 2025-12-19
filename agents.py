@@ -3,8 +3,10 @@ agents script is responsible for preparing the objects for CrewAI agents.
 See https://docs.crewai.com/en/concepts/agents for conceptual definition in framework.
 
 For all practical intents and purposes, agent is the top level archetype of the agentic system.
-It is the agent - in our case powered by the LLM, but in theory it can be any piece of software based logic capable of
-performing conditional logic - who is responsible for receiving input, process it, make a decision and provide output.
+It is the agent who is responsible for receiving input, process it, make a decision and provide output. Note that different Orch. frameworks might
+have different default behaviors for undefined LLMs, my recommendation is to always define one and not overcomplicate it.
+In theory, you could have agentic/agent-like systems using non LLM decision nodes, for the purposes of this subject I advise caution,
+do not overcomplicate it needlessly -> in most cases easier solution is to duplicate the LLM usage and use a tool to provide a different logic execution procedure.
 
 Tool is an action outside the capability of the agent, It can be thought of both as an auxiliary or primary method of the agentic action.
 Since we typically think about agentic systems as LLMs based decision frameworks, and as such in theory you can have a system completely void of tools.
