@@ -37,7 +37,7 @@ def initialize_llm():
     # take note that the system is not conforming to User/Agent flow (User-agent-agent-agent-user)
     # Certain models might struggle with activating and using the flow
     # Inability of model to conform to the flow will be noted by the resulting error
-    llm_instance = LLM(model="gemini/gemini-3.1-flash-lite")
+    llm_instance = LLM(model="gemini-pro-latest")
     print("LLM Initialized for Streamlit app.")
     return llm_instance
 
