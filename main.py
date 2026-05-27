@@ -37,12 +37,21 @@ def initialize_llm():
     # take note that the system is not conforming to User/Agent flow (User-agent-agent-agent-user)
     # Certain models might struggle with activating and using the flow
     # Inability of model to conform to the flow will be noted by the resulting error
-    llm_instance = LLM(model=f"gemini/gemini-2.5-pro")
+    llm_instance = LLM(model="gemini/gemini-3.1-flash-lite")
     print("LLM Initialized for Streamlit app.")
     return llm_instance
 
 
 llm = initialize_llm()
+# --- Knowledge Base Setup ---
+if 'kb_setup_done' not in st.session_state:
+    if not (os.path.exists(VECTOR_STORE_INDEX_PATH) and os.path.exists(VECTOR_STORE_DOCS_PATH)):
+        with st.spinner("Setting up Obsidian knowledge base... This may take a moment."):
+            setup_knowledge_base(OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH)
+        st.sidebar.success("Knowledge base setup complete!")
+    else:
+        st.sidebar.info("Knowledge base found.")
+    st.session_state.kb_setup_done = True
 
 # this server runs prepared gemma variant for student use
 #https://deeplearning.vse.cz:80
@@ -58,15 +67,7 @@ def get_agents(_llm):
 
 query_analyst, retrieval_specialist, notes_synthesizer = get_agents(llm)
 
-# --- Knowledge Base Setup ---
-if 'kb_setup_done' not in st.session_state:
-    if not (os.path.exists(VECTOR_STORE_INDEX_PATH) and os.path.exists(VECTOR_STORE_DOCS_PATH)):
-        with st.spinner("Setting up Obsidian knowledge base... This may take a moment."):
-            setup_knowledge_base(OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH, VECTOR_STORE_DOCS_PATH)
-        st.sidebar.success("Knowledge base setup complete!")
-    else:
-        st.sidebar.info("Knowledge base found.")
-    st.session_state.kb_setup_done = True
+
 
 # --- Streamlit UI ---
 st.title(" Obsidian Vault Assistant")

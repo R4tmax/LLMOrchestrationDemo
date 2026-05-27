@@ -1,0 +1,20 @@
+[project]
+name = "llmorchestrationdemo"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "crewai[google-genai]>=1.14.5",
+    "duckduckgo-search>=8.1.1",
+    "faiss-cpu>=1.14.2",
+    "langchain>=1.3.2",
+    "langchain-community>=0.4.2",
+    "langchain-text-splitters>=1.1.2",
+    "llama-index-readers-obsidian>=0.7.1",
+    "numpy>=2.4.6",
+    "python-dotenv>=1.2.2",
+    "sentence-transformers>=5.5.1",
+    "streamlit>=1.57.0",
+    "torchvision>=0.27.0",
+]

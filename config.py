@@ -6,7 +6,7 @@ load_dotenv()
 
 # set this to your local vault, link is designed as absolute, but it should work as relative as well should you chose to do so
 # note that Win users should stick to absolute paths for their own mental healths sake
-OBSIDIAN_VAULT_PATH = r"C:\Users\kadle\Documents\PersonalLibrary"
+OBSIDIAN_VAULT_PATH = r"/home/r4tmax/Documents/PersonalLibrary/"
 
 # Embedding model (local)
 # this is what we use to create the vector embeddings
