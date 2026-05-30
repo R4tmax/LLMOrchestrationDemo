@@ -9,49 +9,43 @@ This is where you want to prompt engineer to the best of your ability.
 """
 from crewai import Task
 
-
 def create_tasks(query_analyst_agent, retrieval_agent, synthesizer_agent):
     analyse_query_task = Task(
         description=(
             "Analyze the LATEST USER QUERY and CHAT HISTORY. "
-            "1. Formulate a search query optimized for vector search (keywords). "
-            "2. Determine if this topic likely exists in the 'Personal Obsidian Notes' or requires 'External Web Search'. "
-            "   (Hint: Personal meetings, projects, and private thoughts are Obsidian. News, generic definitions, and libraries are Web). "
+            "Formulate a single, highly optimized search query for a vector database. "
+            "Focus on core entities, nouns, and semantic meaning. Strip away conversational filler."
             "\n\nCHAT HISTORY:\n{chat_history}\n\nLATEST USER QUERY:\n{query}"
         ),
-        expected_output="A refined search query and a brief suggestion on which source (Obsidian or Web) is most likely to have the answer.",
+        expected_output="A single optimized search string (no extra text or explanations).",
         agent=query_analyst_agent
     )
 
-    # note, LLM semantically struggles with decision process on the first step
     retrieve_info_task = Task(
         description=(
-            "You have a refined query and a source suggestion. "
-            "EXECUTION STEPS: "
-            "1. ALWAYS PRIORITISE trying the 'Obsidian Vault Search' tool first using the refined query.  "
-            "2. Analyze the results. If the Obsidian search returns 'No relevant information found' or irrelevant text: "
-            "3. IMMEDIATELY use the 'DuckDuckGoSearch' tool to find the answer on the web. "
-            "4. If you used the Web, make sure to verify the credibility of the source briefly."
+            "Using the optimized search string from the previous task, follow these EXACT steps:\n"
+            "1. Execute the 'Obsidian Vault Search' tool using the search string.\n"
+            "2. Read the returned text carefully. Does it actually contain information that answers the user's original query?\n"
+            "3. If YES: Stop researching. Output the retrieved Obsidian text, prefixed with '[SOURCE: OBSIDIAN]'.\n"
+            "4. If NO (or if the result is empty): Execute the 'DuckDuckGoSearch' tool to find the answer on the web.\n"
+            "5. Output the web results, prefixed with '[SOURCE: WEB]'."
         ),
-        expected_output=(
-            "The raw text results from the tool used. "
-            "Prefix the output with '[SOURCE: OBSIDIAN]' or '[SOURCE: WEB]' so the next agent knows where it came from."
-        ),
+        expected_output="The raw text results from the successful tool, clearly prefixed with either [SOURCE: OBSIDIAN] or [SOURCE: WEB].",
         agent=retrieval_agent,
         context=[analyse_query_task]
     )
 
     synthesize_answer_task = Task(
         description=(
-            "Synthesize a helpful answer for the user based on the RETRIEVED CONTEXT. "
-            "1. If the context starts with [SOURCE: OBSIDIAN], treat it as high-authority personal knowledge. "
-            "2. If the context starts with [SOURCE: WEB], frame it as 'I found this online...'. "
-            "3. If no information was found in either, apologize politely. "
+            "Synthesize a helpful, conversational answer for the user based strictly on the RETRIEVED CONTEXT from the previous task. "
+            "1. If the context starts with [SOURCE: OBSIDIAN], treat it as the user's high-authority personal knowledge. "
+            "2. If the context starts with [SOURCE: WEB], frame it as 'I couldn't find this in your notes, but I found this online...'. "
+            "3. CRITICAL FALLBACK: If the retrieved context is empty, irrelevant, or states no information was found, DO NOT make up an answer. You MUST output a clear warning stating that the search was inconclusive across all available sources."
             "\n\nCHAT HISTORY:\n{chat_history}\n\nLATEST USER QUERY:\n{query}"
         ),
-        expected_output="A natural, conversational answer that explicitly references whether the info came from personal notes or the internet.",
+        expected_output="A natural answer citing the source, OR a clear warning that the system could not find conclusive information to answer the query.",
         agent=synthesizer_agent,
-        context=[retrieve_info_task, analyse_query_task]
+        context=[retrieve_info_task]
     )
 
     return analyse_query_task, retrieve_info_task, synthesize_answer_task

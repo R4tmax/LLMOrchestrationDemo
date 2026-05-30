@@ -8,7 +8,7 @@ have different default behaviors for undefined LLMs, my recommendation is to alw
 In theory, you could have agentic/agent-like systems using non LLM decision nodes, for the purposes of this subject I advise caution,
 do not overcomplicate it needlessly -> in most cases easier solution is to duplicate the LLM usage and use a tool to provide a different logic execution procedure.
 
-Tool is an action outside the capability of the agent, It can be thought of both as an auxiliary or primary method of the agentic action.
+Tool is an action outside the standard capability of the agent, It can be thought of both as an auxiliary or primary method of the agentic action.
 Since we typically think about agentic systems as LLMs based decision frameworks, and as such in theory you can have a system completely void of tools.
 Inversely you could have a system, which basically only chains tools.
 Degree of freedom of thought in the agentic system is largely dependent on the prompt engineering/finetuning done by you as the developer
@@ -19,17 +19,14 @@ from crewai import Agent
 from tools.obsidian_retriever_tool import ObsidianSearchTool
 from tools.duckDuckGo_tool import MyCustomDuckDuckGoTool
 
-# Called from main to prepare the "crew"
 def create_agents(llm_instance):
-    # Instantiate the tool objects
     obsidian_tool = ObsidianSearchTool()
     web_search_tool = MyCustomDuckDuckGoTool()
 
-
     query_analyst = Agent(
         role='Expert Query Analyst',
-        goal='Refine user queries to be highly effective. Decide if the query could be answered using internal knowledge stored in a "digital brain" (Obsidian), or external knowledge (Web). Assume the context of Software engineering formal education on part of the creator of the Obsidian Vault with a collection of esoteric interests. Only advice external search as a last resort (e.g. information is outside of suspected domains and/or unreasonably specific)',
-        backstory='You are a master at understanding user intent. You analyze whether a user is asking about personal notes or general world knowledge.',
+        goal='Refine user queries into highly effective, keyword-dense search strings optimized for vector database retrieval.',
+        backstory='You are a master at understanding user intent and extracting semantic keywords. You do not answer the question; you only translate human conversation into optimal search queries.',
         verbose=True,
         allow_delegation=False,
         llm=llm_instance
@@ -37,12 +34,11 @@ def create_agents(llm_instance):
 
     retrieval_specialist = Agent(
         role='Information Research Specialist',
-        goal='Find the best answer using EITHER the Obsidian Vault OR the Web.',
+        goal='Retrieve relevant information to answer the user query by STRICTLY searching the Obsidian Vault first, and falling back to the Web ONLY if the vault lacks the answer.',
         backstory=(
-            "You are a versatile researcher. Your primary source of truth is the Obsidian Vault. "
-            "However, if the user asks for recent events, general facts not in the notes, or if "
-            "the Obsidian search returns nothing, you are authorized to search the Web. "
-            "ALWAYS PRIORITISE trying Obsidian first, unless previous suggestions advise not to do so."
+            "You are a methodical researcher. You must ALWAYS use the Obsidian tool first. "
+            "Once you get the Obsidian results, you evaluate them. If they contain the answer, your job is done. "
+            "If they are empty or irrelevant to the actual question, you are authorized to pivot and use the Web search tool."
         ),
         verbose=True,
         allow_delegation=False,
@@ -52,8 +48,13 @@ def create_agents(llm_instance):
 
     notes_synthesizer = Agent(
         role='Insightful Content Synthesizer',
-        goal='Synthesize a comprehensive answer based on the retrieved context (whether internal or external).',
-        backstory='You piece together information from various sources to construct clear answers. You explicitly state where the information came from (Notes vs. Web).',
+        goal='Synthesize a comprehensive answer based ONLY on the retrieved context. If the context is inconclusive, explicitly warn the user instead of answering.',
+        backstory=(
+            "You are a clear and honest communicator. You piece together information from the provided context. "
+            "You always explicitly state whether your answer is based on personal notes or web search results. "
+            "CRUCIALLY, if the researcher provides empty, irrelevant, or inconclusive results, you refuse to guess. "
+            "Instead, you clearly warn the user that the information is missing from both the vault and the web."
+        ),
         verbose=True,
         allow_delegation=False,
         llm=llm_instance
