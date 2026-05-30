@@ -25,6 +25,9 @@ from config import GEMINI_API_KEY, OBSIDIAN_VAULT_PATH, VECTOR_STORE_INDEX_PATH,
 from obsidian_processor import setup_knowledge_base
 import os
 
+from visualize_vectors import render_vector_space
+from visualize_vectors2d import render_vector_space2d
+
 # --- Page Configuration ---
 st.set_page_config(page_title="Obsidian RAG Chat", layout="wide")
 
@@ -71,6 +74,13 @@ query_analyst, retrieval_specialist, notes_synthesizer = get_agents(llm)
 
 # --- Streamlit UI ---
 st.title(" Obsidian Vault Assistant")
+
+with st.sidebar.expander("🗺️ View Vector Map (3D)"):
+    render_vector_space()
+
+with st.sidebar.expander("🗺️ View Vector Map (2D)"):
+    render_vector_space2d()
+
 
 
 # Initialize chat history in session state
